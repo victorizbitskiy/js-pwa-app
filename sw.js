@@ -1,4 +1,4 @@
-const staticCacheName = 'js-pwa-app-v1'
+const staticCacheName = 'js-pwa-app-v4'
 
 const assetUrls = [
   'index.html',
@@ -12,10 +12,15 @@ self.addEventListener('install', async event => {
 })
 
 self.addEventListener('activate', async event => {
-  console.log('activate')
+  const cacheNames = await caches.keys()
+  await Promise.all(
+    cacheNames
+    .filter(name => name !== staticCacheName)
+    .map(name => caches.delete(name))
+  )
 })
 
-self.addEventListener('fetch',  event => {
+self.addEventListener('fetch', event => {
   console.log('Fetch', event.request.url)
   event.respondWith(cacheFirst(event.request))
 })
